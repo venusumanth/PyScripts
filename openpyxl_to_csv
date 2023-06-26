@@ -1,0 +1,34 @@
+def copy_lender_city_to_csv(excel_file, sheet_name, csv_file):
+    # Load the Excel file
+    workbook = load_workbook(source_excel_file)
+    sheet = workbook[sheet_name]
+
+    # Find the column index for "Lender City"
+    column_index = None
+    for cell in sheet[1]:
+        if cell.value == "Lender City":
+            column_index = cell.column_letter
+            break
+
+    if column_index is None:
+        print("Column 'Lender City' not found in the sheet.")
+        return
+
+    # Extract the column data
+    column_data = [cell.value for cell in sheet[column_index]]
+
+    header = column_data[0]
+    data = column_data[1:]
+    with open(csv_file, 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([header])
+        writer.writerows(zip(data))
+
+
+source_excel_file = 'US_SBA_Data/lender7aactivity_fy2023_20230531.xlsx'  # Replace with the path to your Excel file
+sheet_name = 'Lender'  # Replace with the name of the sheet containing the column
+column_name = 'Lender City'  # Replace with the name of the column you want to copy
+csv_file = './output.csv'  # Replace with the desired path for the output CSV file
+
+
+copy_lender_city_to_csv(source_excel_file, sheet_name, csv_file)
